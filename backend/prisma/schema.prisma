@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  DOCTOR
+  PATIENT
+}
+
+enum ConversationType {
+  DOCTOR_PATIENT
+  DOCTOR_DOCTOR
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role
+  createdAt DateTime @default(now())
+
+  patientProfile Patient? @relation("PatientUser")
+  doctorPatients Patient[] @relation("DoctorPatients")
+  conversationsStarted Conversation[] @relation("ConversationParticipantOne")
+  conversationsReceived Conversation[] @relation("ConversationParticipantTwo")
+  sentMessages Message[] @relation("MessageSender")
+}
+
+model Patient {
+  id          Int      @id @default(autoincrement())
+  userId      Int      @unique
+  doctorId    Int?
+
+  age         Int
+  gender      String
+  bloodGroup  String
+
+  user         User @relation("PatientUser", fields: [userId], references: [id])
+  doctor       User? @relation("DoctorPatients", fields: [doctorId], references: [id])
+
+  vitalLogs    VitalLog[]
+  alerts       Alert[]
+}
+
+model VitalLog {
+  id            Int      @id @default(autoincrement())
+  patientId     Int
+
+  bpSystolic    Int
+  bpDiastolic   Int
+  sugarLevel    Float
+  heartRate     Int
+
+  status        String
+  createdAt     DateTime @default(now())
+
+  patient Patient @relation(fields: [patientId], references: [id])
+}
+
+model Alert {
+  id          Int      @id @default(autoincrement())
+  patientId   Int
+
+  severity    String
+  message     String
+  isRead      Boolean @default(false)
+
+  createdAt   DateTime @default(now())
+
+  patient Patient @relation(fields: [patientId], references: [id])
+}
+
+model Conversation {
+  id                 Int              @id @default(autoincrement())
+  type               ConversationType
+  participantOneId   Int
+  participantTwoId   Int
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  participantOne User @relation("ConversationParticipantOne", fields: [participantOneId], references: [id])
+  participantTwo User @relation("ConversationParticipantTwo", fields: [participantTwoId], references: [id])
+  messages       Message[]
+
+  @@unique([participantOneId, participantTwoId])
+  @@index([participantOneId])
+  @@index([participantTwoId])
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  conversationId Int
+  senderId       Int
+  text           String
+  isRead         Boolean      @default(false)
+  readAt         DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation("MessageSender", fields: [senderId], references: [id])
+
+  @@index([conversationId, createdAt])
+  @@index([senderId])
+}
