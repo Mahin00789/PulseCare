@@ -25,6 +25,8 @@ const {getRecentActivities,
 } = require("../controllers/doctorController");
 const {getAllDoctors,
 }= require("../controllers/doctorController");
+const {getPatientDetails,
+} = require("../controllers/doctorController");
 router.get(
   "/patients",
   protect,
@@ -70,5 +72,11 @@ router.get(
   "/all",
   protect,
   getAllDoctors
+);
+router.get(
+  "/patient/:id",
+  protect,
+  authorizeRoles("DOCTOR"),
+  getPatientDetails
 );
 module.exports = router;

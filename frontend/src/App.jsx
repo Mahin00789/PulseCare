@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import PatientDashboard from "./pages/PatientDashboard";
 import Register from "./pages/Register";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import PatientDetails from "./pages/PatientDetails";
 function App() {
   return (
     <BrowserRouter>
@@ -25,6 +26,14 @@ function App() {
   element={
     <ProtectedRoute role="PATIENT">
       <PatientDashboard />
+    </ProtectedRoute>
+  }
+/>
+        <Route
+  path="/doctor/patient/:id"
+  element={
+    <ProtectedRoute role="DOCTOR">
+      <PatientDetails />
     </ProtectedRoute>
   }
 />

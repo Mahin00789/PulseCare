@@ -393,6 +393,53 @@ const getRecentActivities = async (req, res) => {
   }
 
 };
+const getPatientDetails = async (req, res) => {
+  try {
+    const patientId = Number(req.params.id);
+
+    const patient = await prisma.patient.findUnique({
+      where: {
+        id: patientId,
+      },
+      include: {
+        user: true,
+        doctor: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    if (!patient) {
+      return res.status(404).json({
+        message: "Patient not found",
+      });
+    }
+
+    const recentVitals = await prisma.vitalLog.findMany({
+      where: {
+        patientId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 3,
+    });
+
+    res.status(200).json({
+      patient,
+      recentVitals,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
 module.exports = {
   getAssignedPatients,
   getDoctorAlerts,
@@ -402,4 +449,5 @@ module.exports = {
   getDoctorVitals,
   getRecentActivities,
   getAllDoctors,
+  getPatientDetails,
 };

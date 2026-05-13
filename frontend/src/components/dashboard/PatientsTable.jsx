@@ -1,12 +1,12 @@
 import { Eye } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 const statusStyles = {
   HIGH: "bg-rose-50 text-rose-700",
   NORMAL: "bg-emerald-50 text-emerald-700",
 };
 
 function PatientsTable({ patients }) {
-
+  const navigate = useNavigate();
   if (!patients || patients.length === 0) {
     return (
       <section className="rounded-2xl bg-[#f8fbff] p-5 shadow-sm">
@@ -56,7 +56,7 @@ function PatientsTable({ patients }) {
 
           <tbody>
             {patients.map((patient) => {
-
+              // console.log(patient);
               const latestVital =
                 patient.vitals?.length > 0
                   ? patient.vitals[0]
@@ -118,13 +118,15 @@ function PatientsTable({ patients }) {
 
                   <td className="rounded-r-xl px-3 py-3">
 
-                    <button className="inline-flex items-center gap-1.5 rounded-lg border border-blue-100 px-2.5 py-1.5 text-xs font-bold text-blue-700 transition hover:bg-blue-50">
-
-                      <Eye size={14} />
-
-                      View Details
-
-                    </button>
+                    <button
+  onClick={() =>
+    navigate(`/doctor/patient/${patient.id}`)
+  }
+  className="inline-flex items-center gap-1.5 rounded-lg border border-blue-100 px-2.5 py-1.5 text-xs font-bold text-blue-700 transition hover:bg-blue-50"
+>
+  <Eye size={14} />
+  View Details
+</button>
 
                   </td>
 

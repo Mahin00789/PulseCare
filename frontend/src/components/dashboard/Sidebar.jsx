@@ -17,11 +17,6 @@ import {
 const menuItems = [
   { label: "Dashboard", icon: LayoutDashboard, view: "dashboard" },
   { label: "Chat", icon: MessageCircle, view: "chat" },
-  { label: "Patients", icon: UsersRound },
-  { label: "Alerts", icon: Bell },
-  { label: "Vitals Analytics", icon: Activity },
-  { label: "Real-Time Monitoring", icon: RadioTower },
-  { label: "Settings", icon: Settings },
   { label: "Logout", icon: LogOut },
 ];
 

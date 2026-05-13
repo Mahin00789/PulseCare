@@ -56,7 +56,7 @@ function VitalsChart({vitals}) {
           </span>
         </div>
         <div className="h-72">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
             <LineChart data={chartData} margin={{ left: -20, right: 10, top: 10 }}>
               <CartesianGrid stroke="#e8eefc" strokeDasharray="4 4" vertical={false} />
               <XAxis dataKey="name" tick={{ fill: "#94a3b8", fontSize: 11 }} tickLine={false} axisLine={false} />
@@ -77,7 +77,7 @@ function VitalsChart({vitals}) {
           High vs normal readings
         </p>
         <div className="h-72">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
             <PieChart>
               <Pie data={alertsData} dataKey="value" innerRadius={62} outerRadius={94} paddingAngle={5}>
                 {alertsData.map((alert) => (
