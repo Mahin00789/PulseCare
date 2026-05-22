@@ -5,13 +5,18 @@ import {
   MessageCircle,
 } from "lucide-react";
 
+import { useNavigate } from "react-router-dom";
+
 const menuItems = [
   { label: "Dashboard", icon: LayoutDashboard, view: "dashboard" },
+  { label: "AI Symptom Checker", icon: HeartPulse, path: "/patient/symptom-checker" },
+  { label: "Symptom History", icon: HeartPulse, path: "/patient/symptom-history" },
   { label: "Chat", icon: MessageCircle, view: "chat" },
   { label: "Logout", icon: LogOut },
 ];
 
 function PatientSidebar({ activeView = "dashboard", onViewChange, patient, unreadCount = 0 }) {
+  const navigate = useNavigate();
 
   const handleLogout = () => {
 
@@ -69,11 +74,15 @@ function PatientSidebar({ activeView = "dashboard", onViewChange, patient, unrea
             <button
               key={item.label}
               type="button"
-              onClick={
-                item.label === "Logout"
-                  ? handleLogout
-                  : () => onViewChange?.(item.view)
-              }
+              onClick={() => {
+                if (item.label === "Logout") {
+                  handleLogout();
+                } else if (item.path) {
+                  navigate(item.path);
+                } else {
+                  onViewChange?.(item.view);
+                }
+              }}
               className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-xs font-bold transition duration-200 ${
                 item.view === activeView
                   ? "bg-blue-50 text-blue-700"

@@ -6,6 +6,9 @@ import PatientDashboard from "./pages/PatientDashboard";
 import Register from "./pages/Register";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PatientDetails from "./pages/PatientDetails";
+import SymptomChecker from "./pages/SymptomChecker";
+import SymptomHistory from "./pages/SymptomHistory";
+
 function App() {
   return (
     <BrowserRouter>
@@ -26,6 +29,22 @@ function App() {
   element={
     <ProtectedRoute role="PATIENT">
       <PatientDashboard />
+    </ProtectedRoute>
+  }
+/>
+        <Route
+  path="/patient/symptom-checker"
+  element={
+    <ProtectedRoute role="PATIENT">
+      <SymptomChecker />
+    </ProtectedRoute>
+  }
+/>
+        <Route
+  path="/patient/symptom-history"
+  element={
+    <ProtectedRoute role="PATIENT">
+      <SymptomHistory />
     </ProtectedRoute>
   }
 />

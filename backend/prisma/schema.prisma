@@ -23,6 +23,7 @@ model User {
   email     String   @unique
   password  String
   role      Role
+  specialization String? // Nullable, only used for DOCTORS
   createdAt DateTime @default(now())
 
   patientProfile Patient? @relation("PatientUser")
@@ -46,6 +47,7 @@ model Patient {
 
   vitalLogs    VitalLog[]
   alerts       Alert[]
+  symptomChecks SymptomCheck[]
 }
 
 model VitalLog {
@@ -108,4 +110,27 @@ model Message {
 
   @@index([conversationId, createdAt])
   @@index([senderId])
+}
+
+model SymptomCheck {
+  id                         Int      @id @default(autoincrement())
+  patientId                  Int
+  
+  // Input
+  symptoms                   String
+  age                        Int
+  gender                     String
+  duration                   String
+  severityLevel              String
+
+  // AI Output
+  possibleConditions         Json
+  severityClassification     String
+  precautions                Json
+  recommendedSpecialist      String
+  requiresImmediateAttention Boolean
+
+  createdAt                  DateTime @default(now())
+
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
 }

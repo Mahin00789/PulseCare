@@ -7,6 +7,7 @@ const vitalRoutes = require("./routes/vitalRoutes");
 const doctorRoutes = require("./routes/doctorRoutes");
 const patientRoutes = require("./routes/patientRoutes");
 const chatRoutes = require("./routes/chatRoutes");
+const symptomRoutes = require("./routes/symptomRoutes");
 
 const app = express();
 
@@ -20,6 +21,8 @@ app.use("/api/v1/vitals", vitalRoutes);
 app.use("/api/v1/doctor", doctorRoutes);
 app.use("/api/v1/patient", patientRoutes);
 app.use("/api/v1/chat", chatRoutes);
+app.use("/api/v1/symptoms", symptomRoutes);
+
 app.get("/", (req, res) => {
   res.json({
     success: true,
