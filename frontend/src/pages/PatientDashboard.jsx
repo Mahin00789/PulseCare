@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import API from "../services/api.js";
+import toast from "react-hot-toast";
 import {
   Activity,
   Droplets,
@@ -35,25 +36,31 @@ function PatientDashboard() {
   const [loading, setLoading] = useState(true);
   const [activeView, setActiveView] = useState("dashboard");
   const latestVital = vitals[0];
+
   const fetchVitals = async () => {
+    try {
+      const res = await API.get(`/vitals/${patient.id}`);
+      setVitals(res.data.vitals);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  try {
+  const handleDeleteVital = async (vitalId) => {
+    const confirmed = window.confirm("Delete this vital record? This cannot be undone.");
+    if (!confirmed) return;
 
-    const res = await API.get(
-      `/vitals/${patient.id}`
-    );
+    try {
+      await API.delete(`/vitals/${vitalId}`);
+      toast.success("Vital record deleted successfully.");
+      fetchVitals();
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message || "Unable to delete vital.");
+    }
+  };
 
-    setVitals(res.data.vitals);
-
-  } catch (error) {
-
-    console.log(error);
-
-  }
-
-};
-useEffect(() => {
-
+  useEffect(() => {
   const loadPatientDashboard = async () => {
 
     try {
@@ -199,10 +206,8 @@ if (loading) {
             </section>
 
             <section className="grid gap-5 xl:grid-cols-[0.75fr_1.25fr]">
-              <VitalsForm patient={patient} 
-                          fetchVitals={fetchVitals}
-              />
-              <RecentVitals vitals={vitals} />
+              <VitalsForm patient={patient} fetchVitals={fetchVitals} />
+              <RecentVitals vitals={vitals} onDeleteVital={handleDeleteVital} />
             </section>
 
             <section className="rounded-2xl bg-[#f8fbff] p-5 shadow-sm">

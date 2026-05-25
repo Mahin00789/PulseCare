@@ -74,6 +74,57 @@ if (status === "HIGH") {
     });
   }
 };
+const deleteVital = async (req, res) => {
+  try {
+    const vitalId = Number(req.params.id);
+
+    if (!vitalId) {
+      return res.status(400).json({
+        success: false,
+        message: "Vital id is required",
+      });
+    }
+
+    const vital = await prisma.vitalLog.findUnique({
+      where: { id: vitalId },
+      include: {
+        patient: true,
+      },
+    });
+
+    if (!vital) {
+      return res.status(404).json({
+        success: false,
+        message: "Vital entry not found",
+      });
+    }
+
+    if (req.user.role === "PATIENT") {
+      if (vital.patient.userId !== req.user.id) {
+        return res.status(403).json({
+          success: false,
+          message: "Access denied",
+        });
+      }
+    }
+
+    await prisma.vitalLog.delete({
+      where: { id: vitalId },
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Vital record deleted successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 const getPatientVitals = async (req, res) => {
   try {
     const patientId = Number(req.params.patientId);
@@ -133,5 +184,6 @@ const getPatientVitals = async (req, res) => {
 };
 module.exports = {
   addVitals,
+  deleteVital,
   getPatientVitals,
 };

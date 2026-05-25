@@ -8,6 +8,7 @@ const authorizeRoles = require("../middleware/roleMiddleware");
 
 const {
   addVitals,
+  deleteVital,
 } = require("../controllers/vitalController");
 const {
     getPatientVitals,
@@ -17,6 +18,12 @@ router.post(
   protect,
   authorizeRoles("PATIENT"),
   addVitals
+);
+router.delete(
+  "/:id",
+  protect,
+  authorizeRoles("PATIENT"),
+  deleteVital
 );
 router.get(
   "/:patientId",
