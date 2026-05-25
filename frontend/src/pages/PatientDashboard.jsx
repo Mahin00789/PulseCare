@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 
 import ChatPanel from "../components/chat/ChatPanel";
+import useChat from "../hooks/useChat";
 import AlertStatusCard from "../components/patientDashboard/AlertStatusCard";
 import DoctorCard from "../components/patientDashboard/DoctorCard";
 import HealthChart from "../components/patientDashboard/HealthChart";
@@ -28,12 +29,13 @@ const healthTrendData = [
 ];
 
 function PatientDashboard() {
-  const[patient, setPatient] = useState(null);
-  const[vitals, setVitals] = useState([]);
-  const[loading, setLoading] = useState(true);
-  const[activeView, setActiveView] = useState("dashboard");
+  const chat = useChat();
+  const [patient, setPatient] = useState(null);
+  const [vitals, setVitals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeView, setActiveView] = useState("dashboard");
   const latestVital = vitals[0];
-const fetchVitals = async () => {
+  const fetchVitals = async () => {
 
   try {
 
@@ -103,6 +105,7 @@ if (loading) {
           activeView={activeView}
           onViewChange={setActiveView}
           patient={patient}
+          unreadCount={chat.totalUnread}
         />
 
         <section className="min-w-0 flex-1 rounded-[28px] bg-white">
@@ -127,7 +130,7 @@ if (loading) {
 
           {activeView === "chat" ? (
             <div className="px-5 pb-6 lg:px-7">
-              <ChatPanel role="PATIENT" />
+              <ChatPanel role="PATIENT" chat={chat} />
             </div>
           ) : (
           <div className="space-y-5 px-5 pb-6 lg:px-7">

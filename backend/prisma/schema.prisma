@@ -28,6 +28,8 @@ model User {
 
   patientProfile Patient? @relation("PatientUser")
   doctorPatients Patient[] @relation("DoctorPatients")
+  doctorPrescriptions Prescription[] @relation("DoctorPrescriptions")
+  appointments Appointment[] @relation("DoctorAppointments")
   conversationsStarted Conversation[] @relation("ConversationParticipantOne")
   conversationsReceived Conversation[] @relation("ConversationParticipantTwo")
   sentMessages Message[] @relation("MessageSender")
@@ -44,6 +46,8 @@ model Patient {
 
   user         User @relation("PatientUser", fields: [userId], references: [id])
   doctor       User? @relation("DoctorPatients", fields: [doctorId], references: [id])
+  prescriptions Prescription[]
+  appointments Appointment[]
 
   vitalLogs    VitalLog[]
   alerts       Alert[]
@@ -133,4 +137,60 @@ model SymptomCheck {
   createdAt                  DateTime @default(now())
 
   patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+}
+
+model Appointment {
+  id             Int      @id @default(autoincrement())
+  doctorId       Int
+  patientId      Int
+  appointmentDate DateTime
+  status         String   @default("SCHEDULED")
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  doctor User @relation("DoctorAppointments", fields: [doctorId], references: [id])
+  patient Patient @relation(fields: [patientId], references: [id])
+  prescriptions Prescription[]
+
+  @@index([doctorId])
+  @@index([patientId])
+  @@index([appointmentDate])
+}
+
+model Prescription {
+  id           Int                    @id @default(autoincrement())
+  doctorId     Int
+  patientId    Int
+  appointmentId Int?
+  status       String                 @default("ISSUED")
+  pdfUrl       String?
+  diagnosis    String
+  precautions  String?
+  notes        String?
+  followUpDate DateTime?
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+
+  doctor       User                   @relation("DoctorPrescriptions", fields: [doctorId], references: [id])
+  patient      Patient                @relation(fields: [patientId], references: [id])
+  appointment  Appointment?           @relation(fields: [appointmentId], references: [id])
+  medicines    PrescriptionMedicine[]
+
+  @@index([doctorId])
+  @@index([patientId])
+  @@index([appointmentId])
+}
+
+model PrescriptionMedicine {
+  id             Int          @id @default(autoincrement())
+  prescriptionId Int
+  medicineName   String
+  dosage         String
+  frequency      String
+  duration       String
+
+  prescription Prescription @relation(fields: [prescriptionId], references: [id], onDelete: Cascade)
+
+  @@index([prescriptionId])
 }

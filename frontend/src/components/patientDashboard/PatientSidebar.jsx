@@ -3,6 +3,7 @@ import {
   LayoutDashboard,
   LogOut,
   MessageCircle,
+  FileText,
 } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
@@ -11,6 +12,7 @@ const menuItems = [
   { label: "Dashboard", icon: LayoutDashboard, view: "dashboard" },
   { label: "AI Symptom Checker", icon: HeartPulse, path: "/patient/symptom-checker" },
   { label: "Symptom History", icon: HeartPulse, path: "/patient/symptom-history" },
+  { label: "Prescriptions", icon: FileText, path: "/patient/prescriptions" },
   { label: "Chat", icon: MessageCircle, view: "chat" },
   { label: "Logout", icon: LogOut },
 ];

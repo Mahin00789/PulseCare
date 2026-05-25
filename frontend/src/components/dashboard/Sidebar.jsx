@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import API from "../../services/api.js";
 
 import {
   Activity,
   Bell,
+  FileText,
   HeartPulse,
   LayoutDashboard,
   LogOut,
@@ -16,11 +18,14 @@ import {
 
 const menuItems = [
   { label: "Dashboard", icon: LayoutDashboard, view: "dashboard" },
+  { label: "Prescriptions", icon: FileText, path: "/doctor/prescriptions" },
   { label: "Chat", icon: MessageCircle, view: "chat" },
   { label: "Logout", icon: LogOut },
 ];
 
 function Sidebar({ activeView = "dashboard", onViewChange, unreadCount = 0 }) {
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const [doctor, setDoctor] = useState(null);
 
@@ -96,6 +101,7 @@ function Sidebar({ activeView = "dashboard", onViewChange, unreadCount = 0 }) {
         {menuItems.map((item) => {
 
           const Icon = item.icon;
+          const isActive = item.path ? location.pathname === item.path : item.view === activeView;
 
           return (
 
@@ -105,12 +111,14 @@ function Sidebar({ activeView = "dashboard", onViewChange, unreadCount = 0 }) {
               onClick={
                 item.label === "Logout"
                   ? handleLogout
-                  : item.view
-                    ? () => onViewChange?.(item.view)
-                    : undefined
+                  : item.path
+                    ? () => navigate(item.path)
+                    : item.view
+                      ? () => onViewChange?.(item.view)
+                      : undefined
               }
               className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-xs font-bold transition duration-200 ${
-                item.view === activeView
+                isActive
                   ? "bg-blue-50 text-blue-700"
                   : "text-slate-500 hover:bg-blue-50 hover:text-blue-700"
               }`}

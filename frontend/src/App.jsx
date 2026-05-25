@@ -8,6 +8,9 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import PatientDetails from "./pages/PatientDetails";
 import SymptomChecker from "./pages/SymptomChecker";
 import SymptomHistory from "./pages/SymptomHistory";
+import CreatePrescription from "./pages/CreatePrescription";
+import DoctorPrescriptions from "./pages/DoctorPrescriptions";
+import PrescriptionHistory from "./pages/PrescriptionHistory";
 
 function App() {
   return (
@@ -21,6 +24,14 @@ function App() {
   element={
     <ProtectedRoute role="DOCTOR">
       <DoctorDashboard />
+    </ProtectedRoute>
+  }
+/>
+        <Route
+  path="/doctor/prescriptions"
+  element={
+    <ProtectedRoute role="DOCTOR">
+      <DoctorPrescriptions />
     </ProtectedRoute>
   }
 />
@@ -49,10 +60,26 @@ function App() {
   }
 />
         <Route
+  path="/patient/prescriptions"
+  element={
+    <ProtectedRoute role="PATIENT">
+      <PrescriptionHistory />
+    </ProtectedRoute>
+  }
+/>
+        <Route
   path="/doctor/patient/:id"
   element={
     <ProtectedRoute role="DOCTOR">
       <PatientDetails />
+    </ProtectedRoute>
+  }
+/>
+        <Route
+  path="/doctor/prescription/create/:patientId"
+  element={
+    <ProtectedRoute role="DOCTOR">
+      <CreatePrescription />
     </ProtectedRoute>
   }
 />

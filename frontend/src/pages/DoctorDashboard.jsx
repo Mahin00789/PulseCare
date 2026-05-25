@@ -1,5 +1,6 @@
 import { useEffect,useState } from "react";
 import API from "../services/api.js";
+import useChat from "../hooks/useChat";
 import {
   Activity,
   BellRing,
@@ -18,18 +19,19 @@ import Topbar from "../components/dashboard/Topbar";
 import VitalsChart from "../components/dashboard/VitalsChart";
 import socket, { connectSocket } from "../services/socket.js";
 function DoctorDashboard() {
-  const[patients, setPatients] = useState([]);
+  const chat = useChat();
+  const [patients, setPatients] = useState([]);
   const [stats, setStats] = useState({
     totalPatients: 0,
     totalAlerts: 0,
     unreadAlerts: 0,
     totalVitals: 0,
   });
-  const[alerts, setAlerts] = useState([]);
+  const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const[vitals, setVitals] = useState([]);
-  const[activities, setActivities] = useState([]);
-  const[activeView, setActiveView] = useState("dashboard");
+  const [vitals, setVitals] = useState([]);
+  const [activities, setActivities] = useState([]);
+  const [activeView, setActiveView] = useState("dashboard");
 
   const fetchPatients = async () => {
 
@@ -170,7 +172,7 @@ if (loading) {
 
       <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl rounded-[28px] bg-white/70 shadow-2xl shadow-blue-200/70 ring-1 ring-white/80">
 
-        <Sidebar activeView={activeView} onViewChange={setActiveView} />
+        <Sidebar activeView={activeView} onViewChange={setActiveView} unreadCount={chat.totalUnread} />
 
         <section className="min-w-0 flex-1 rounded-[28px] bg-white">
 
@@ -195,7 +197,7 @@ if (loading) {
 
           {activeView === "chat" ? (
             <div className="px-5 pb-6 lg:px-7">
-              <ChatPanel role="DOCTOR" />
+              <ChatPanel role="DOCTOR" chat={chat} />
             </div>
           ) : (
           <div className="space-y-5 px-5 pb-6 lg:px-7">

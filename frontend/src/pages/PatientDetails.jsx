@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { FileText } from "lucide-react";
 import API from "../services/api.js";
 
 const PatientDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [patient, setPatient] = useState(null);
   const [vitals, setVitals] = useState([]);
@@ -29,9 +31,18 @@ const PatientDetails = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">
-        Patient Details
-      </h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold">
+          Patient Details
+        </h1>
+        <button
+          onClick={() => navigate(`/doctor/prescription/create/${patient.id}`)}
+          className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
+        >
+          <FileText className="w-5 h-5" />
+          Create Prescription
+        </button>
+      </div>
 
       <div className="bg-white p-6 rounded-xl shadow mb-6">
         <p><strong>Name:</strong> {patient.user?.name ?? patient.name}</p>
